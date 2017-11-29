@@ -23,9 +23,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.blackangel.baskettogether.common.domain.MyError;
 import com.blackangel.baskettogether.user.domain.User;
@@ -105,18 +105,17 @@ public class UserController {
 	}
 
 	@RequestMapping(value="/user/photo", method=RequestMethod.POST)
-	public ResponseEntity<String> uploadPhoto(MultipartFile uploadfile) {
+	public ResponseEntity<String> uploadPhoto(@RequestParam("uploadfile") MultipartFile uploadfile) {
 		OutputStream out = null;
         PrintWriter printWriter = null;
  
         try {
             // 파일명 얻기
-//        	MultipartFile uploadfile = request.getFile("uploadfile");
             String fileName = uploadfile.getOriginalFilename();
             // 파일의 바이트 정보 얻기
             byte[] bytes = uploadfile.getBytes();
             // 파일의 저장 경로 얻기
-            String uploadPath = "/Users/kimjeonghun/Develop/storage/basket-together/test.jpg";
+            String uploadPath = "C:\\Develop\\storage\\basket-together\\" + fileName;
              
             // 파일 객체 생성
             File file = new File(uploadPath);
@@ -132,6 +131,7 @@ public class UserController {
             out.write(bytes);
              
             return new ResponseEntity<String>(HttpStatus.OK);
+            
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
