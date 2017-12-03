@@ -28,7 +28,7 @@ public class UserTest {
 	
 	@Before
 	public void setup() {
-		user1 = new User("test1234", "qwer1234", "테스트1234", UserRegType.TYPE_APP);
+		user1 = new User("test1234", "qwer1234", "테스트1234", "1234", UserRegType.TYPE_APP);
 	}
 	
 	@Test

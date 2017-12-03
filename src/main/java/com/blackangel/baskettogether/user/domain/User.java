@@ -37,6 +37,7 @@ public class User {
 	private long _id;
 	private String userId;
 	private String password;
+	private String salt;
 	private String nickname;
 	private String country;
 	private String phone;
@@ -48,9 +49,10 @@ public class User {
 	private String deviceId;
 	private String deviceType;
 	
-	public User(String id, String password, String name, UserRegType regType) {
+	public User(String id, String password, String nickname, String snsId, UserRegType regType) {
 		this(id, password);
-		this.nickname = name;
+		this.nickname = nickname;
+		this.snsId = snsId;
 		this.regType = regType.getValue();
 	}
 
@@ -85,6 +87,15 @@ public class User {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	
+	public String getSalt() {
+		return salt;
+	}
+
+	public void setSalt(String salt) {
+		this.salt = salt;
 	}
 
 	public String getNickname() {

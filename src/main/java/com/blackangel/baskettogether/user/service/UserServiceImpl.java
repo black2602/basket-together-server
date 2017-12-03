@@ -3,13 +3,21 @@ package com.blackangel.baskettogether.user.service;
 import java.sql.Date;
 import java.sql.Timestamp;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.blackangel.baskettogether.common.exception.UserException;
+import com.blackangel.baskettogether.common.util.EncryptUtil;
 import com.blackangel.baskettogether.user.dao.UserDao;
+import com.blackangel.baskettogether.user.dao.UserLoginSessionDao;
 import com.blackangel.baskettogether.user.domain.User;
+import com.blackangel.baskettogether.user.domain.UserLoginSession;
 
 public class UserServiceImpl implements UserService {
 
 	private UserDao userDao;
+	
+	@Autowired
+	private UserLoginSessionDao userLoginSessionDao;
 	
 	public void setUserDao(UserDao userDao) {
 		this.userDao = userDao;
@@ -17,6 +25,12 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public long signUp(User user) {
+		String salt = EncryptUtil.newRandomKey();
+		String encryptedPw = EncryptUtil.pbkdf2(user.getPassword(), salt, 1000);
+		
+		user.setSalt(salt);
+		user.setPassword(encryptedPw);
+		
 		return userDao.add(user);
 	}
 
@@ -24,10 +38,10 @@ public class UserServiceImpl implements UserService {
 	public User login(User user) throws UserException {
 		User getUser = userDao.get(user.getUserId());
 		
-		if(getUser == null) {
-			throw new UserException("존재하지 않는 사용자입니다.");
-		}
-		else if(!user.getPassword().equals(getUser.getPassword())) {
+		String encryptedPw = EncryptUtil.pbkdf2(user.getPassword(), getUser.getSalt(), 1000);
+		System.out.println("try login salt = " + getUser.getSalt() + ", enc pw = " + encryptedPw);
+		
+		if(!getUser.getPassword().equals(encryptedPw)) {
 			throw new UserException("아이디 또는 비밀번호를 확인해주세요.");
 		}
 		
@@ -39,6 +53,14 @@ public class UserServiceImpl implements UserService {
 		userDao.update(getUser);
 		
 		return getUser;		// 로그인 성공 
+	}
+
+	@Override
+	public UserLoginSession issueSession() {
+		UserLoginSession session = new UserLoginSession();
+		
+		long sessionId = userLoginSessionDao.add(session);
+		return userLoginSessionDao.get(sessionId);
 	}
 	
 	

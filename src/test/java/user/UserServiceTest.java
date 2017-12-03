@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -13,12 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.util.NumberUtils;
 
 import com.blackangel.baskettogether.common.exception.UserException;
 import com.blackangel.baskettogether.user.dao.UserDao;
+import com.blackangel.baskettogether.user.dao.UserLoginSessionDao;
 import com.blackangel.baskettogether.user.domain.User;
 import com.blackangel.baskettogether.user.domain.User.UserRegType;
+import com.blackangel.baskettogether.user.domain.UserLoginSession;
 import com.blackangel.baskettogether.user.service.UserService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -26,12 +26,13 @@ import com.blackangel.baskettogether.user.service.UserService;
 public class UserServiceTest {
 
 	@Autowired UserDao userDao;
+	@Autowired UserLoginSessionDao userLoginSessionDao;
 	@Autowired UserService userService;
 	User user1;
 	
 	@Before
 	public void setup() {
-		user1 = new User("test1234", "qwer1234", "테스트1234", UserRegType.TYPE_APP);
+		user1 = new User("test1234", "qwer1234", "테스트1234", "1234", UserRegType.TYPE_APP);
 	}
 	
 	@Test(expected=EmptyResultDataAccessException.class)
@@ -77,6 +78,16 @@ public class UserServiceTest {
 		assertEquals(loginUser.getDeviceId(), getUser.getDeviceId());
 		assertNotNull(getUser.getLastLoginAt());
 		assertEquals(loginUser.getDeviceType(), getUser.getDeviceType());
+		
+	}
+	
+	@Test
+	public void testSignup() {
+		//세션 발급
+		UserLoginSession session = userService.issueSession();
+		
+		
+		
 		
 	}
 	
