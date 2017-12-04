@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 
 public class User {
@@ -36,8 +37,13 @@ public class User {
 	
 	private long _id;
 	private String userId;
+	
+	@JsonIgnore
 	private String password;
+	
+	@JsonIgnore
 	private String salt;
+	
 	private String nickname;
 	private String country;
 	private String phone;

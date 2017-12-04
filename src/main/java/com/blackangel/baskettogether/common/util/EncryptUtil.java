@@ -73,12 +73,6 @@ public class EncryptUtil {
 		String publicKeyModulus = publicSpec.getModulus().toString(16);
 		String publicKeyExponent = publicSpec.getPublicExponent().toString(16);
 		
-		String privateKeyModulus = privateSpec.getModulus().toString(16);
-		String privateKeyExponent = privateSpec.getPrivateExponent().toString(16);
-		
-		System.out.println("pvk modulus=" + privateKeyModulus);
-		System.out.println("pvk exponent=" + privateKeyExponent);
-
 		return new RSA(privateKey, publicKeyModulus, publicKeyExponent);
 	}
 
@@ -89,11 +83,6 @@ public class EncryptUtil {
 	public static String decryptRSA(PrivateKey privateKey, String encryptedText) throws Exception {
 		Cipher cipher = Cipher.getInstance("RSA");
 		cipher.init(Cipher.DECRYPT_MODE, privateKey);
-		
-//		byte[] decodeBase64 = Base64.decodeBase64(encryptedText);
-//		String decodeStr = new String(decodeBase64, "UTF-8");
-//		System.out.println("rsa decode str = " + decodeStr);
-		
 		byte[] decryptedBytes = cipher.doFinal(Base64.decodeBase64(encryptedText));
 		
 		return new String(decryptedBytes, "UTF-8");

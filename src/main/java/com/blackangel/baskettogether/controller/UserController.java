@@ -134,7 +134,7 @@ public class UserController {
 		return null;
 	}
 
-	@RequestMapping(value="/user/login", method=RequestMethod.POST)
+	@RequestMapping(value="/user/login", method=RequestMethod.POST, produces = "application/json; charset=UTF-8")
 	public ResponseEntity<String> login(HttpServletRequest req, HttpSession session) {
 
 		try {
@@ -150,11 +150,14 @@ public class UserController {
 			User loginTryUser = new User(userId, plainPw);
 
 			User loginUser = userService.login(loginTryUser);
+			
+			System.out.println("login userName = " + loginUser.getNickname());
 			loginUser.setPassword(null);
 
 			ObjectMapper mapper = new ObjectMapper();
 			String json = mapper.writerWithType(User.class).writeValueAsString(loginUser);
 
+			System.out.println("json = " + json);
 			return new ResponseEntity<String>(json, HttpStatus.OK);
 
 		} catch (JsonGenerationException e) {
